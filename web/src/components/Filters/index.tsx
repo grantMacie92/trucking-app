@@ -33,7 +33,7 @@ const useLoadCompanies = ({ dispatch }) => {
     }, [dispatch]);
 }
 
-const Form = () => {
+const Filters = () => {
     const dispatch = useDispatch();
     const companies = useSelector(selectCompanies);
     const {
@@ -64,9 +64,6 @@ const Form = () => {
 
     useLoadCompanies({ dispatch })
 
-    const companyId = watch("companyId");
-
-
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <select {...register('companyId')}>
@@ -82,4 +79,4 @@ const Form = () => {
     )
 }
 
-export default Form;
+export default Filters;

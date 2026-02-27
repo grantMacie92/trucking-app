@@ -1,14 +1,12 @@
-import React, {useState} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { selectIncidents } from "../../store.tsx";
-import Form from "./Form.tsx";
 
 const IncidentsTable = () => {
     const { items: incidents } = useSelector(selectIncidents);
 
     return (
         <React.Fragment>
-            <Form />
             <table>
                 <thead>
                     <tr>
