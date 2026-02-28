@@ -1,0 +1,4 @@
+/* Hide default Google Maps InfoWindow close button */
+.gm-ui-hover-effect {
+  display: none !important;
+}

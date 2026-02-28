@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import googleMapIcon from './assets/google-map-icon.svg';
 import IncidentsTable from './components/IncidentsTable';
 import Map from './components/GoogleMaps/index';
-import Tabs from './components/Tabs/index';
 import Filters from './components/Filters';
 import {
     fetchAllIncidents,
@@ -49,21 +48,8 @@ function App() {
         <Filters />
       </div>
       <div className="app-body">
-          <Tabs
-              tabs={[
-                  {
-                      id: "map",
-                      label: "Map",
-                      content: <Map data={incidents} />,
-                  },
-                  {
-                      id: "table",
-                      label: "Table",
-                      content: <IncidentsTable />,
-                  },
-              ]}
-              initialTabId="map"
-          />
+          <Map data={incidents} />
+          <IncidentsTable />
       </div>
     </>
   )
