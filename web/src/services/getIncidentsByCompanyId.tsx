@@ -1,18 +1,20 @@
-import type { Incident } from '../types/Incident.tsx';
+import type { Incident } from "../types/Incident.tsx";
 
-export async function getIncidentsByCompanyId({ companyId }): Promise<Incident[]> {
-    const response = await fetch(`/api/incidents/company/${companyId}`,
-        {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-            },
-        });
+export async function getIncidentsByCompanyId({
+  companyId,
+}: {
+  companyId: number;
+}): Promise<Incident[]> {
+  const response = await fetch(`/api/incidents/company/${companyId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch incidents');
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch incidents");
+  }
 
-    const data = (await response.json()) as Incident[];
-    return data;
+  return (await response.json()) as Incident[];
 }

@@ -1,13 +1,19 @@
+import type { Driver } from "./Driver.tsx";
+
 export interface Incident {
-    id: string;
-    title: string;
-    status: 'open' | 'closed' | 'in_progress';
-    createdAt: string;
-    description?: string;
+  incidentId: number;
+  severity: string;
+  type: string;
+  status: "open" | "closed";
+  occurredAt: string;
+  locationName?: string;
+  drivers: Driver[];
+  latitude: number;
+  longitude: number;
 }
 
 export type IncidentsState = {
-    items: Incident[];
-    loading: boolean;
-    error: string | null;
+  items: Incident[];
+  loading: boolean;
+  error: string | null;
 };
