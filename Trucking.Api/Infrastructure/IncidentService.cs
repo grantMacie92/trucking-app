@@ -1,4 +1,5 @@
 using api.Application.Common;
+using api.Application.Drivers;
 using api.Application.Incidents;
 using api.Application.Incidents.Add;
 using api.Application.Incidents.List;
@@ -75,7 +76,16 @@ public class IncidentService : IIncidentService
                 i.Status,
                 i.LocationName,
                 i.Latitude,
-                i.Longitude
+                i.Longitude,
+                i.IncidentDrivers
+                    .OrderBy(id => id.Driver.LastName)
+                    .ThenBy(id => id.Driver.FirstName)
+                    .Select(id => new DriverDto(
+                        id.DriverId,
+                        id.Driver.FirstName + " " + id.Driver.LastName,
+                        id.Driver.LicenseNumber
+                    ))
+                    .ToList()
             )).ToListAsync(ct);
 
         return new PagedResult<IncidentListItemDto>(incidents, page, pageSize, totalCount);
@@ -103,7 +113,16 @@ public class IncidentService : IIncidentService
                 i.Status,
                 i.LocationName,
                 i.Latitude,
-                i.Longitude
+                i.Longitude,
+                i.IncidentDrivers
+                    .OrderBy(id => id.Driver.LastName)
+                    .ThenBy(id => id.Driver.FirstName)
+                    .Select(id => new DriverDto(
+                        id.DriverId,
+                        id.Driver.FirstName + " " + id.Driver.LastName,
+                        id.Driver.LicenseNumber
+                    ))
+                    .ToList()
             )).ToListAsync(ct);
         
         return new PagedResult<IncidentListItemDto>(incidents, page, pageSize, totalCount);
