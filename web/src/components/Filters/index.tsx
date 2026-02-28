@@ -1,11 +1,19 @@
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import {useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getCompanies} from "../../services/getCompanies.tsx";
-import {selectCompanies} from "../../store.tsx";
-import {getIncidents} from "../../services/getIncidents.tsx";
-import {fetchCompanies, fetchCompaniesFailure, fetchCompaniesSuccess} from "../../features/Companies/actions.tsx";
-import {fetchIncidents, fetchIncidentsFailure, fetchIncidentsSuccess} from "../../features/Incidents/actions.tsx";
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchCompanies,
+    fetchCompaniesFailure,
+    fetchCompaniesSuccess
+} from '../../features/Companies/actions.tsx';
+import {
+    fetchIncidentsByCompanyId,
+    fetchIncidentsByCompanyIdFailure,
+    fetchIncidentsByCompanyIdSuccess,
+} from '../../features/Incidents/actions.tsx';
+import { getCompanies } from '../../services/getCompanies.tsx';
+import { getIncidentsByCompanyId } from '../../services/getIncidentsByCompanyId.tsx';
+import { selectCompanies } from '../../store.tsx';
 
 type IncidentFilterForm = {
     companyId: number;
@@ -18,7 +26,6 @@ const useLoadCompanies = ({ dispatch }) => {
 
             try {
                 const data = await getCompanies();
-                console.log("companies from API:", data);
                 dispatch(fetchCompaniesSuccess(data));
             } catch (err) {
                 dispatch(
@@ -48,14 +55,14 @@ const Filters = () => {
     });
 
     const onSubmit = useCallback(async (values: { companyId: string }) => {
-        dispatch(fetchIncidents());
+        dispatch(fetchIncidentsByCompanyId());
 
         try {
-            const data = await getIncidents({ companyId: Number(values.companyId) });
-            dispatch(fetchIncidentsSuccess(data));
+            const data = await getIncidentsByCompanyId({ companyId: Number(values.companyId) });
+            dispatch(fetchIncidentsByCompanyIdSuccess(data));
         } catch (error) {
             dispatch(
-                fetchIncidentsFailure(
+                fetchIncidentsByCompanyIdFailure(
                     error instanceof Error ? error.message : "Unknown error"
                 )
             );

@@ -1,16 +1,13 @@
-import type { Incident } from "../../types/Incident.tsx";
+import type { IncidentsState } from '../../types/Incident.tsx';
 import {
-    FETCH_INCIDENTS,
-    FETCH_INCIDENTS_FAILURE,
-    FETCH_INCIDENTS_SUCCESS,
+    FETCH_ALL_INCIDENTS,
+    FETCH_ALL_INCIDENTS_FAILURE,
+    FETCH_ALL_INCIDENTS_SUCCESS,
+    FETCH_INCIDENTS_BY_COMPANY_ID,
+    FETCH_INCIDENTS_BY_COMPANY_ID_FAILURE,
+    FETCH_INCIDENTS_BY_COMPANY_ID_SUCCESS,
     type IncidentsAction
-} from "./actions.tsx";
-
-export type IncidentsState = {
-    items: Incident[];
-    loading: boolean;
-    error: string | null;
-};
+} from './actions.tsx';
 
 const initialState: IncidentsState = {
     items: [],
@@ -23,21 +20,41 @@ export function incidentsReducer(
     action: IncidentsAction
 ): IncidentsState {
     switch (action.type) {
-        case FETCH_INCIDENTS:
+        case FETCH_ALL_INCIDENTS:
             return {
                 ...state,
                 loading: true,
                 error: null,
             };
 
-        case FETCH_INCIDENTS_SUCCESS:
+        case FETCH_ALL_INCIDENTS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 items: action.payload,
             };
 
-        case FETCH_INCIDENTS_FAILURE:
+        case FETCH_ALL_INCIDENTS_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
+        case FETCH_INCIDENTS_BY_COMPANY_ID:
+            return {
+                ...state,
+                loading: true,
+                error: null,
+            };
+
+        case FETCH_INCIDENTS_BY_COMPANY_ID_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                items: action.payload,
+            };
+
+        case FETCH_INCIDENTS_BY_COMPANY_ID_FAILURE:
             return {
                 ...state,
                 loading: false,

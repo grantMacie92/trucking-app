@@ -1,6 +1,6 @@
-import type {Incident} from "../types/Incident.tsx";
+import type { Incident } from '../types/Incident.tsx';
 
-export async function getIncidents({ companyId }): Promise<Incident[]> {
+export async function getIncidentsByCompanyId({ companyId }): Promise<Incident[]> {
     const response = await fetch(`/api/incidents/company/${companyId}`,
         {
             method: "GET",

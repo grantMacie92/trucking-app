@@ -5,3 +5,9 @@ export interface Incident {
     createdAt: string;
     description?: string;
 }
+
+export type IncidentsState = {
+    items: Incident[];
+    loading: boolean;
+    error: string | null;
+};
