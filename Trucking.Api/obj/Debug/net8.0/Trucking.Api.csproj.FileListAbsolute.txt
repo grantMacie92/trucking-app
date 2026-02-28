@@ -143,3 +143,4 @@
 /Users/timgentry/Desktop/macie/trucking-app/Trucking.Api/obj/Debug/net8.0/Trucking.Api.pdb
 /Users/timgentry/Desktop/macie/trucking-app/Trucking.Api/obj/Debug/net8.0/Trucking.Api.genruntimeconfig.cache
 /Users/timgentry/Desktop/macie/trucking-app/Trucking.Api/obj/Debug/net8.0/ref/Trucking.Api.dll
+/Users/timgentry/Desktop/macie/trucking-app/Trucking.Api/obj/Debug/net8.0/Trucking.Api.sourcelink.json

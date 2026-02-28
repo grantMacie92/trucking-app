@@ -52,7 +52,7 @@ public class IncidentService : IIncidentService
         return AddDriverResult.Ok;
     }
 
-    public async Task<PagedResult<IncidentListItemDto>> ListAsync(ListIncidentsQuery query, CancellationToken ct)
+    public async Task<PagedResult<IncidentListItemDto>> ListByCompanyIdAsync(ListIncidentsQuery query, CancellationToken ct)
     {
         var page = query.Page <= 0 ? 1 : query.Page;
         var pageSize = query.PageSize <= 0 ? 25 : query.PageSize;
@@ -78,6 +78,34 @@ public class IncidentService : IIncidentService
                 i.Longitude
             )).ToListAsync(ct);
 
+        return new PagedResult<IncidentListItemDto>(incidents, page, pageSize, totalCount);
+    }
+
+    public async Task<PagedResult<IncidentListItemDto>> ListAsync(ListIncidentsQuery query, CancellationToken ct)
+    {
+        var page = query.Page <= 0 ? 1 : query.Page;
+        var pageSize = query.PageSize <= 0 ? 25 : query.PageSize;
+
+        var baseQuery = _db.Incidents
+            .AsNoTracking();
+
+        var totalCount = await baseQuery.CountAsync(ct);
+        
+        var incidents = await baseQuery
+            .OrderBy(i => i.OccurredAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(i => new IncidentListItemDto(
+                i.IncidentId,
+                i.OccurredAt,
+                i.Type,
+                i.Severity,
+                i.Status,
+                i.LocationName,
+                i.Latitude,
+                i.Longitude
+            )).ToListAsync(ct);
+        
         return new PagedResult<IncidentListItemDto>(incidents, page, pageSize, totalCount);
     }
 }

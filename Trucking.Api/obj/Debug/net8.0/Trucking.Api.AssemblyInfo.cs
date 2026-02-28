@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Trucking.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+beacc3276796286f1c8f90c9738806123a5a484f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Trucking.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Trucking.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

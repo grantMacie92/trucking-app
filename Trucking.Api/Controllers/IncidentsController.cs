@@ -14,12 +14,20 @@ public class IncidentsController : ControllerBase
     {
         _service = service;
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetIncidents([FromQuery] ListIncidentsQuery query, CancellationToken ct)
+    {
+        var result = await _service.ListAsync(query, ct);
+
+        return Ok(result);
+    }
 
     [HttpGet("company/{companyId}")]
     public async Task<IActionResult> GetIncidents([FromRoute] int companyId, [FromQuery] ListIncidentsQuery query, CancellationToken ct)
     {
         query = query with { CompanyId = companyId };
-        var result = await _service.ListAsync(query, ct);
+        var result = await _service.ListByCompanyIdAsync(query, ct);
 
         return Ok(result);
     }
