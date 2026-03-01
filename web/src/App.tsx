@@ -1,40 +1,41 @@
-import {useEffect, useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useJsApiLoader } from '@react-google-maps/api';
-import IncidentsTable from './components/IncidentsTable';
-import Map from './components/GoogleMaps/index';
-import SideBar from './components/SideBar';
-import Header from './components/Header';
-import FiltersModal from './components/Filters/FiltersModal';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useJsApiLoader } from "@react-google-maps/api";
+import IncidentsTable from "./components/IncidentsTable";
+import Map from "./components/GoogleMaps/index";
+import SideBar from "./components/SideBar";
+import Header from "./components/Header";
+import FiltersModal from "./components/Filters/FiltersModal";
 import {
-    fetchAllIncidents,
-    fetchAllIncidentsFailure,
-    fetchAllIncidentsSuccess
-} from './features/Incidents/actions.tsx';
-import { getAllIncidents } from './services/getAllIncidents.tsx';
-import { selectIncidents } from './store.tsx';
-import './App.css'
+  fetchIncidents,
+  fetchIncidentsFailure,
+  fetchIncidentsSuccess,
+} from "./features/Incidents/actions.tsx";
+import { getIncidents } from "./services/getIncidents.tsx";
+import { type AppDispatch, selectIncidents } from "./store.tsx";
+import type { IncidentFilters } from "./types/Incident.tsx";
+import "./App.css";
 
-const useLoadIncidents = ({ dispatch }) => {
-    useEffect(() => {
-        const loadIncidents = async () => {
-            dispatch(fetchAllIncidents());
+const useLoadIncidents = ({ dispatch }: { dispatch: AppDispatch }) => {
+  useEffect(() => {
+    const loadIncidents = async () => {
+      dispatch(fetchIncidents());
+      const query: IncidentFilters = {};
+      try {
+        const data = await getIncidents({ request: query });
+        dispatch(fetchIncidentsSuccess(data));
+      } catch (err) {
+        dispatch(
+          fetchIncidentsFailure(
+            err instanceof Error ? err.message : "Unknown error",
+          ),
+        );
+      }
+    };
 
-            try {
-                const data = await getAllIncidents();
-                dispatch(fetchAllIncidentsSuccess(data));
-            } catch (err) {
-                dispatch(
-                    fetchAllIncidentsFailure(
-                        err instanceof Error ? err.message : "Unknown error"
-                    )
-                );
-            }
-        };
-
-        loadIncidents();
-    }, [dispatch]);
-}
+    loadIncidents();
+  }, [dispatch]);
+};
 
 function App() {
   const { items: incidents } = useSelector(selectIncidents);
@@ -42,8 +43,7 @@ function App() {
   const [showMap, setShowMap] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-
-    useLoadIncidents({ dispatch });
+  useLoadIncidents({ dispatch });
 
   const { isLoaded } = useJsApiLoader({
     id: "google-maps-script",
@@ -51,34 +51,44 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left column */}
-        <aside className="w-64 shrink-0 border-r-4 border-[#343434] hidden md:block" style={{ backgroundColor: '#2C2C2C' }}>
+    <div className="min-h-screen bg-[#242424]">
+      {/* Fixed sidebar (desktop only) */}
+      <aside
+        className="hidden md:flex md:fixed md:inset-y-0 md:left-0 md:w-64 md:flex-col
+                   border-r-4 border-[#343434] bg-[#2C2C2C]"
+      >
+        {/* Let the sidebar content scroll internally if it overflows */}
+        <div className="h-full overflow-y-auto">
           <SideBar />
-        </aside>
-
-        {/* Right column */}
-        <div className="flex-1 min-h-screen flex flex-col p-1">
-          <Header showMap={showMap} setShowMap={setShowMap} onOpenFilters={() => setFiltersOpen(true)} />
-          {/* Main content (fills remaining height) */}
-          <main className="flex-1 overflow-auto">
-            <div className="space-y-4">
-              {showMap && (
-                  isLoaded ? (
-                    <Map data={incidents} />
-                  ):(
-                    <div>...Loading</div>
-                  )
-              )}
-              {showMap === false && <IncidentsTable />}
-            </div>
-          </main>
         </div>
+      </aside>
 
-        {/* Mobile full-screen filters */}
-        <FiltersModal open={filtersOpen} onClose={() => setFiltersOpen(false)} />
+      {/* Main column. On desktop, offset for the fixed sidebar */}
+      <div className="h-screen md:pl-64 flex flex-col">
+        <Header
+          showMap={showMap}
+          setShowMap={setShowMap}
+          onOpenFilters={() => setFiltersOpen(true)}
+        />
+
+        {/* Constrained area under header */}
+        <main className="flex-1 min-h-0 p-1">
+          {showMap ? (
+            <div className="h-full min-h-0">
+              {isLoaded ? <Map data={incidents} /> : <div>...Loading</div>}
+            </div>
+          ) : (
+            <div className="h-full min-h-0 overflow-auto">
+              <IncidentsTable />
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Mobile full-screen filters */}
+      <FiltersModal open={filtersOpen} onClose={() => setFiltersOpen(false)} />
     </div>
   );
 }
 
-export default App
+export default App;

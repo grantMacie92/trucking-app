@@ -11,7 +11,7 @@ import MapsMarker from "./MapsMarker.tsx";
 import MapsInfoWindow from "./MapsInfoWindow.tsx";
 import type { Incident } from "../../types/Incident.tsx";
 
-const containerStyle = { width: "100%", height: "100vh" };
+const containerStyle = { width: "100%", height: "100%" };
 
 export default function Map({ data }: { data: T[] }) {
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -150,6 +150,7 @@ export default function Map({ data }: { data: T[] }) {
 
   return (
     <GoogleMap
+      mapContainerClassName="w-full h-full"
       mapContainerStyle={containerStyle}
       center={DEFAULT_CENTER}
       zoom={DEFAULT_ZOOM}

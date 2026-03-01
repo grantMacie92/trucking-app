@@ -16,4 +16,11 @@ export type IncidentsState = {
   items: Incident[];
   loading: boolean;
   error: string | null;
+  filters: IncidentFilters;
+};
+
+export type IncidentFilters = {
+  companyId?: number;
+  severity?: string;
+  status?: string;
 };

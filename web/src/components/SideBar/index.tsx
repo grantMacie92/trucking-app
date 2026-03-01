@@ -1,9 +1,11 @@
-import Filters from "../Filters/index.tsx";
+import Filters from "../Filters";
 
 const SideBar = () => {
-    return (
-        <Filters />
-    )
-}
+  return (
+    <div className="flex h-full flex-col">
+      <Filters />
+    </div>
+  );
+};
 
-export default SideBar
+export default SideBar;

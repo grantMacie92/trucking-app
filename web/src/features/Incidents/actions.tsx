@@ -1,44 +1,31 @@
-import type { Incident } from '../../types/Incident.tsx';
+import type { GetIncidentsRequest, Incident } from "../../types/Incident.tsx";
 
-export const FETCH_ALL_INCIDENTS = 'FETCH_ALL_INCIDENTS';
-export const FETCH_ALL_INCIDENTS_SUCCESS = 'FETCH_ALL_INCIDENTS_SUCCESS';
-export const FETCH_ALL_INCIDENTS_FAILURE = 'FETCH_ALL_INCIDENTS_FAILURE';
-export const FETCH_INCIDENTS_BY_COMPANY_ID = 'FETCH_INCIDENTS_BY_COMPANY_ID';
-export const FETCH_INCIDENTS_BY_COMPANY_ID_SUCCESS = 'FETCH_INCIDENTS_BY_COMPANY_ID_SUCCESS';
-export const FETCH_INCIDENTS_BY_COMPANY_ID_FAILURE = 'FETCH_INCIDENTS_BY_COMPANY_ID_FAILURE';
+export const FETCH_INCIDENTS = "FETCH_INCIDENTS";
+export const FETCH_INCIDENTS_SUCCESS = "FETCH_INCIDENTS_SUCCESS";
+export const FETCH_INCIDENTS_FAILURE = "FETCH_INCIDENTS_FAILURE";
+export const SET_INCIDENT_FILTERS = "SET_INCIDENT_FILTERS";
 
-export const fetchAllIncidents = () => ({
-    type: FETCH_ALL_INCIDENTS
+export const fetchIncidents = () => ({
+  type: FETCH_INCIDENTS,
 });
 
-export const fetchAllIncidentsSuccess = (incidents: Incident[]) => ({
-    type: FETCH_ALL_INCIDENTS_SUCCESS,
-    payload: incidents
+export const fetchIncidentsSuccess = (incidents: Incident[]) => ({
+  type: FETCH_INCIDENTS_SUCCESS,
+  payload: incidents,
 });
 
-export const fetchAllIncidentsFailure = (error: string) => ({
-    type: FETCH_ALL_INCIDENTS_FAILURE,
-    payload: error
+export const fetchIncidentsFailure = (error: string) => ({
+  type: FETCH_INCIDENTS_FAILURE,
+  payload: error,
 });
 
-export const fetchIncidentsByCompanyId = () => ({
-    type: FETCH_INCIDENTS_BY_COMPANY_ID
+export const setIncidentFilters = (filters: GetIncidentsRequest) => ({
+  type: SET_INCIDENT_FILTERS,
+  payload: filters,
 });
-
-export const fetchIncidentsByCompanyIdSuccess = (incidents: Incident[]) => ({
-    type: FETCH_INCIDENTS_BY_COMPANY_ID_SUCCESS,
-    payload: incidents
-});
-
-export const fetchIncidentsByCompanyIdFailure = (error: string) => ({
-    type: FETCH_INCIDENTS_BY_COMPANY_ID_FAILURE,
-    payload: error
-})
 
 export type IncidentsAction =
-    ReturnType<typeof fetchAllIncidentsSuccess> |
-    ReturnType<typeof fetchAllIncidentsFailure> |
-    ReturnType<typeof fetchAllIncidents> |
-    ReturnType<typeof fetchIncidentsByCompanyIdSuccess> |
-    ReturnType<typeof fetchIncidentsByCompanyIdFailure> |
-    ReturnType<typeof fetchIncidentsByCompanyId>;
+  | ReturnType<typeof fetchIncidentsSuccess>
+  | ReturnType<typeof fetchIncidentsFailure>
+  | ReturnType<typeof fetchIncidents>
+  | ReturnType<typeof setIncidentFilters>;

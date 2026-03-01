@@ -47,9 +47,15 @@ export default function FiltersModal({ open, onClose }: Props) {
       />
 
       {/* Panel */}
-      <div className="absolute inset-0 bg-[#2C2C2C]">
-        <div className="flex items-center justify-between border-b border-[#343434] p-4">
-          <h2 className="text-sm font-semibold text-slate-100">Filters</h2>
+      <div className="absolute inset-0 flex flex-col bg-[#2C2C2C]">
+        {/* Modal header */}
+        <div className="flex-shrink-0 flex items-center justify-between border-b border-[#343434] p-4">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-100">Filters</h2>
+            <p className="mt-1 text-xs text-slate-400">
+              Refine what's shown on the map.
+            </p>
+          </div>
           <button
             onClick={onClose}
             className="rounded-full border border-[#343434] bg-white/4 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/8 focus:outline-none focus:ring-2 focus:ring-sky-500/40"
@@ -58,7 +64,8 @@ export default function FiltersModal({ open, onClose }: Props) {
           </button>
         </div>
 
-        <div className="h-[calc(100vh-57px)] overflow-auto p-4">
+        {/* Filters fills the remaining space */}
+        <div className="flex-1 min-h-0">
           <Filters />
         </div>
       </div>

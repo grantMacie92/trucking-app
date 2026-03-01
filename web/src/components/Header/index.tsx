@@ -22,7 +22,7 @@ const Header = ({
           <img
             src={googleMapIcon}
             alt="google maps logo"
-            className="h-7 w-7 md:h-12 md:w-12"
+            className="h-8 w-8 md:h-10 md:w-10"
           />
           <h1 className="text-xs sm:text-3xl md:text-6xl font-semibold text-slate-100">
             Incidents Map
