@@ -1,7 +1,8 @@
 import type { Company } from "../types/Company.tsx";
 
 export async function getCompanies(): Promise<Company[]> {
-  const response = await fetch(`/api/company`, {
+  const base = import.meta.env.VITE_API_URL ?? "";
+  const response = await fetch(`${base}/api/company`, {
     method: "GET",
     headers: {
       Accept: "application/json",

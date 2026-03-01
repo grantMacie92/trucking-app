@@ -17,7 +17,10 @@ export async function getIncidents({
     params.set("status", request.status);
   }
 
-  const url = params.toString() ? `/api/incidents?${params}` : "/api/incidents";
+  const base = import.meta.env.VITE_API_URL ?? "";
+  const url = params.toString()
+    ? `${base}/api/incidents?${params}`
+    : `${base}/api/incidents`;
 
   const response = await fetch(url, {
     method: "GET",
