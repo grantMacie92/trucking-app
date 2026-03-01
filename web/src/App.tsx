@@ -50,8 +50,6 @@ function App() {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
   });
 
-  console.log("Maps key:", import.meta.env.VITE_GOOGLE_MAPS_KEY);
-
   return (
     <div className="min-h-screen bg-[#242424]">
       {/* Fixed sidebar (desktop only) */}
