@@ -12,7 +12,7 @@ const Filters = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="hidden md:block border-b border-white/10 px-4 py-4">
+      <div className="hidden md:block border-b border-white/10 px-3 py-3">
         <h2 className="text-sm font-semibold text-slate-100">Filters</h2>
         <p className="mt-1 text-xs text-slate-400">
           Refine what's shown on the map.

@@ -15,14 +15,14 @@ const Header = ({
   }, [setShowMap, showMap]);
 
   return (
-    <header className="border-b-2 border-[#343434] p-4">
+    <header className="border-b-2 border-[#343434] p-3">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         {/* Title */}
         <div className="flex items-center gap-3">
           <img
             src={googleMapIcon}
             alt="google maps logo"
-            className="h-8 w-8 md:h-10 md:w-10"
+            className="h-8 w-8 md:h-9 md:w-9"
           />
           <h1 className="text-xs sm:text-3xl md:text-6xl font-semibold text-slate-100">
             Incidents Map

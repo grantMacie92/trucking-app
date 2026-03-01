@@ -1,0 +1,74 @@
+/* Ensure the google map info window wrapper itself is transparent */
+.gm-style .gm-style-iw,
+.gm-style .gm-style-iw-c,
+.gm-style .gm-style-iw-t,
+.gm-style .gm-style-iw-tc {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Remove default padding / scroll container padding */
+.gm-style .gm-style-iw-c {
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.gm-style .gm-style-iw-d {
+    background: transparent !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+}
+
+/* Hide the built-in close button (since you have your own) */
+.gm-style button.gm-ui-hover-effect {
+    display: none !important;
+}
+
+/* Pointer (the little tip) */
+.gm-style .gm-style-iw-t::after {
+    background: #1e1e1e !important; /* matches your surface */
+    box-shadow: none !important;
+}
+
+/* The tail arrow is actually rendered via filter: drop-shadow on the outer container */
+.gm-style .gm-style-iw-t::after {
+    background: #1e1e1e !important;
+    box-shadow: none !important;
+}
+
+/* This is the actual culprit in newer Maps versions — a div with inline style */
+.gm-style-iw-tc {
+    filter: none !important;
+}
+
+.gm-style-iw-tc::after {
+    background: #1e1e1e !important;
+}
+
+/* Nuclear option — targets the inline-styled tail div directly */
+.gm-style-iw-t {
+    filter: none !important;
+}
+
+.gm-style-iw-t::after {
+    background: #1e1e1e !important;
+    box-shadow: none !important;
+}
+
+/* Remove the blue focus outline on the InfoWindow container */
+.gm-style-iw-c {
+    outline: none !important;
+}
+
+/* Fix the inner scroll container so it doesn't overflow */
+.gm-style-iw-d {
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Make the outer container respect its contents width */
+.gm-style-iw-c {
+    max-width: 85vw !important;
+    box-sizing: border-box !important;
+}

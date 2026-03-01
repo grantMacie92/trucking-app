@@ -10,6 +10,7 @@ import {
 import MapsMarker from "./MapsMarker.tsx";
 import MapsInfoWindow from "./MapsInfoWindow.tsx";
 import type { Incident } from "../../types/Incident.tsx";
+import "./index.css";
 
 const containerStyle = { width: "100%", height: "100%" };
 
