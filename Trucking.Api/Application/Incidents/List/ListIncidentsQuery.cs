@@ -2,15 +2,15 @@ namespace api.Application.Incidents.List;
 
 public sealed record ListIncidentsQuery
 {
-    public int CompanyId { get; set; }
-    
-    // filters
+    public int? CompanyId { get; set; }
     
     public DateTime?  From { get; init; }
     
     public DateTime? To { get; init; }
     
     public string? Severity { get; init; }
+    
+    public string? Status { get; init; }
     
     public int? DriverId { get; init; }
     

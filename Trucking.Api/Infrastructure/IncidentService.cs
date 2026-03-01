@@ -53,44 +53,6 @@ public class IncidentService : IIncidentService
         return AddDriverResult.Ok;
     }
 
-    public async Task<PagedResult<IncidentListItemDto>> ListByCompanyIdAsync(ListIncidentsQuery query, CancellationToken ct)
-    {
-        var page = query.Page <= 0 ? 1 : query.Page;
-        var pageSize = query.PageSize <= 0 ? 25 : query.PageSize;
-        
-        var baseQuery = _db.Incidents
-            .AsNoTracking()
-            .Where(i => i.CompanyId == query.CompanyId);
-
-        var totalCount = await baseQuery.CountAsync(ct);
-
-        var incidents = await baseQuery
-            .OrderBy(i => i.OccurredAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(i => new IncidentListItemDto(
-                i.IncidentId,
-                i.OccurredAt,
-                i.Type,
-                i.Severity,
-                i.Status,
-                i.LocationName,
-                i.Latitude,
-                i.Longitude,
-                i.IncidentDrivers
-                    .OrderBy(id => id.Driver.LastName)
-                    .ThenBy(id => id.Driver.FirstName)
-                    .Select(id => new DriverDto(
-                        id.DriverId,
-                        id.Driver.FirstName + " " + id.Driver.LastName,
-                        id.Driver.LicenseNumber
-                    ))
-                    .ToList()
-            )).ToListAsync(ct);
-
-        return new PagedResult<IncidentListItemDto>(incidents, page, pageSize, totalCount);
-    }
-
     public async Task<PagedResult<IncidentListItemDto>> ListAsync(ListIncidentsQuery query, CancellationToken ct)
     {
         var page = query.Page <= 0 ? 1 : query.Page;
@@ -98,6 +60,31 @@ public class IncidentService : IIncidentService
 
         var baseQuery = _db.Incidents
             .AsNoTracking();
+        
+        if (query.CompanyId != null)
+        {
+            baseQuery = baseQuery.Where(incident => incident.CompanyId == query.CompanyId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Severity))
+        {
+            var normalized = Severity.Reconstitute(query.Severity); // Low/Medium/High
+
+            var dbValues = normalized.Value switch
+            {
+                "Low"    => new[] { "low", "minor" },
+                "Medium" => new[] { "medium", "moderate" },
+                "High"   => new[] { "high", "critical", "major" },
+                _        => Array.Empty<string>()
+            };
+
+            baseQuery = baseQuery.Where(i => dbValues.Contains(i.Severity.ToLower()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Status))
+        {
+            baseQuery = baseQuery.Where(incident => incident.Status.ToLower() == query.Status.ToLower());
+        }
 
         var totalCount = await baseQuery.CountAsync(ct);
         
@@ -105,16 +92,16 @@ public class IncidentService : IIncidentService
             .OrderBy(i => i.OccurredAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(i => new IncidentListItemDto(
-                i.IncidentId,
-                i.OccurredAt,
-                i.Type,
-                i.Severity,
-                i.Status,
-                i.LocationName,
-                i.Latitude,
-                i.Longitude,
-                i.IncidentDrivers
+            .Select(incident => new IncidentListItemDto(
+                incident.IncidentId,
+                incident.OccurredAt,
+                incident.Type,
+                incident.Severity,
+                incident.Status,
+                incident.LocationName,
+                incident.Latitude,
+                incident.Longitude,
+                incident.IncidentDrivers
                     .OrderBy(id => id.Driver.LastName)
                     .ThenBy(id => id.Driver.FirstName)
                     .Select(id => new DriverDto(

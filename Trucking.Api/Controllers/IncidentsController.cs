@@ -23,15 +23,6 @@ public class IncidentsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("company/{companyId}")]
-    public async Task<IActionResult> GetIncidents([FromRoute] int companyId, [FromQuery] ListIncidentsQuery query, CancellationToken ct)
-    {
-        query = query with { CompanyId = companyId };
-        var result = await _service.ListByCompanyIdAsync(query, ct);
-
-        return Ok(result);
-    }
-    
     [HttpPost("{incidentId:int}/drivers")]
     public async Task<IActionResult> AddDriver(int incidentId, AddIncidentDriverRequest req)
     {
