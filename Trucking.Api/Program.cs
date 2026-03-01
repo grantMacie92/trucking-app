@@ -15,23 +15,13 @@ builder.Services.AddControllers();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("LocalDev", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy
-            .WithOrigins(
+        policy.WithOrigins(
                 "http://localhost:5173",
-                "http://127.0.0.1:5173"
+                "http://127.0.0.1:5173",
+                "https://salmon-grass-041707b1e.2.azurestaticapps.net"
             )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://salmon-grass-041707b1e.2.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -59,10 +49,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
-app.UseCors("LocalDev");
-app.UseCors("AllowFrontend");
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
