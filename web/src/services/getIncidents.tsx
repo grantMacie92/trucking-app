@@ -17,7 +17,7 @@ export async function getIncidents({
     params.set("status", request.status);
   }
 
-  const base = import.meta.env.VITE_API_URL ?? "";
+  const base = import.meta.env.VITE_API_BASE_URL ?? "";
   const url = params.toString()
     ? `${base}/api/incidents?${params}`
     : `${base}/api/incidents`;
