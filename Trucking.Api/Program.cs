@@ -27,6 +27,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://salmon-grass-041707b1e.2.azurestaticapps.net")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // DbContext registration
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -52,6 +62,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("LocalDev");
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 
