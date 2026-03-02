@@ -16,3 +16,5 @@ export const selectIncidents = (state: RootState) => state.incidents.items;
 export const selectCompanies = (state: RootState) => state.companies.items;
 export const selectIncidentFilters = (state: RootState) =>
   state.incidents.filters;
+export const selectIncidentLoading = (state: RootState) =>
+  state.incidents.loading;

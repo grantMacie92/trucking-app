@@ -5,6 +5,7 @@ import IncidentsTable from "./components/IncidentsTable";
 import Map from "./components/GoogleMaps/index";
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
+import Loader from "./components/Loader";
 import FiltersModal from "./components/Filters/FiltersModal";
 import {
   fetchIncidents,
@@ -12,7 +13,11 @@ import {
   fetchIncidentsSuccess,
 } from "./features/Incidents/actions.tsx";
 import { getIncidents } from "./services/getIncidents.tsx";
-import { type AppDispatch, selectIncidents } from "./store.tsx";
+import {
+  type AppDispatch,
+  selectIncidentLoading,
+  selectIncidents,
+} from "./store.tsx";
 import type { IncidentFilters } from "./types/Incident.tsx";
 import "./App.css";
 
@@ -42,6 +47,7 @@ function App() {
   const dispatch = useDispatch();
   const [showMap, setShowMap] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const loadingIncidents = useSelector(selectIncidentLoading);
 
   useLoadIncidents({ dispatch });
 
@@ -72,10 +78,16 @@ function App() {
         />
 
         {/* Constrained area under header */}
-        <main className="flex-1 min-h-0 p-1">
+        <main className="relative flex-1 min-h-0 p-1">
+          {/* Fullscreen-over-map loader */}
+          {showMap && (loadingIncidents || !isLoaded) && (
+            <Loader isLoaded={isLoaded} />
+          )}
+
           {showMap ? (
             <div className="h-full min-h-0">
-              {isLoaded ? <Map data={incidents} /> : <div>...Loading</div>}
+              {/* Keep the guard so Map only mounts when Google Maps is ready */}
+              {isLoaded ? <Map data={incidents} /> : <div className="h-full" />}
             </div>
           ) : (
             <div className="h-full min-h-0 overflow-auto">
