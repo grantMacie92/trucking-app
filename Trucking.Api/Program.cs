@@ -53,6 +53,8 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.MapGet("/health", () => Results.Ok("Healthy"));
+
 app.MapControllers();
 
 app.Run();
