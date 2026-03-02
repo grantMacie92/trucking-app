@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping health endpoint
         run: |
-          curl -fsS curl -fsS --max-time 20 https://trucking-api-aufgacg4hsbghka6.westus3-01.azurewebsites.net/health > /dev/null
+          curl -fsS --max-time 20 https://trucking-api-aufgacg4hsbghka6.westus3-01.azurewebsites.net/health > /dev/null
