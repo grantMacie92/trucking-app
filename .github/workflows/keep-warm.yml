@@ -2,7 +2,7 @@ name: Keep API Warm
 
 on:
   schedule:
-    - cron: "*/15 * * * *"  # every 10 minutes
+    - cron: "*/10 * * * *"  # every 10 minutes
   workflow_dispatch:
 
 jobs:
@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping health endpoint
         run: |
-          curl -fsS https://salmon-grass-041707b1e.2.azurestaticapps.net/health > /dev/null
+          curl -fsS curl -fsS --max-time 20 https://trucking-api-aufgacg4hsbghka6.westus3-01.azurewebsites.net/health > /dev/null
