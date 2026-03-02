@@ -22,7 +22,7 @@ jobs:
             -w "health status=%{http_code} connect=%{time_connect}s ttfb=%{time_starttransfer}s total=%{time_total}s\n" \
             "$BASE/health"
 
-          echo "Pinging $BASE/api/incidents?limit=1"
+          echo "Pinging $BASE/api/company"
           curl -sS --max-time 20 --retry 3 --retry-delay 2 --retry-all-errors \
             -o /dev/null \
             -w "incidents status=%{http_code} connect=%{time_connect}s ttfb=%{time_starttransfer}s total=%{time_total}s\n" \
