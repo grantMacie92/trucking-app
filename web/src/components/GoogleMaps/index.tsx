@@ -14,14 +14,21 @@ import "./index.css";
 
 const containerStyle = { width: "100%", height: "100%" };
 
-export default function Map({ data }: { data: T[] }) {
-  const mapRef = useRef<google.maps.Map | null>(null);
+// Large suppression window to catch all ghost clicks after cluster/marker taps on mobile.
+// Mobile can fire a delayed map click up to ~2s after a touch interaction.
+const MAP_CLICK_SUPPRESS_MS = 2500;
 
-  // blocks ONLY the immediate bubbling click from marker/cluster -> map
-  const suppressMapClickRef = useRef(false);
+export default function Map({ data }: { data: Incident[] }) {
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+
+  // Mirror isFocused in a ref so callbacks always see the latest value without stale closures
+  const isFocusedRef = useRef(false);
+
+  // Timestamp of the last marker/cluster interaction (mobile can fire a late map click after this)
+  const lastOverlayInteractionAtRef = useRef<number>(0);
 
   const points = useMemo(
     () =>
@@ -81,12 +88,13 @@ export default function Map({ data }: { data: T[] }) {
     if (!isFocused && mapRef.current) fitToPoints();
   }, [fitToPoints, isFocused]);
 
-  const suppressMapClickBriefly = useCallback(() => {
-    suppressMapClickRef.current = true;
-    // release suppression immediately after this click finishes bubbling
-    setTimeout(() => {
-      suppressMapClickRef.current = false;
-    }, 0);
+  const setFocused = useCallback((value: boolean) => {
+    isFocusedRef.current = value;
+    setIsFocused(value);
+  }, []);
+
+  const markOverlayInteraction = useCallback(() => {
+    lastOverlayInteractionAtRef.current = Date.now();
   }, []);
 
   const focusLatLng = useCallback(
@@ -94,25 +102,25 @@ export default function Map({ data }: { data: T[] }) {
       const map = mapRef.current;
       if (!map) return;
 
-      setIsFocused(true);
+      setFocused(true);
       map.panTo(pos);
       map.setZoom(zoom);
     },
-    [mapRef],
+    [setFocused],
   );
 
   const handleMarkerClick = useCallback(
     (p: { id: number; lat: number; lng: number }) => {
-      suppressMapClickBriefly();
+      markOverlayInteraction();
       setSelectedId(p.id);
       focusLatLng({ lat: p.lat, lng: p.lng }, FOCUS_ZOOM);
     },
-    [focusLatLng, suppressMapClickBriefly, setSelectedId],
+    [focusLatLng, markOverlayInteraction],
   );
 
   const handleClusterClick = useCallback(
     (cluster: any) => {
-      suppressMapClickBriefly();
+      markOverlayInteraction();
 
       const map = mapRef.current;
       if (!map) return;
@@ -123,30 +131,41 @@ export default function Map({ data }: { data: T[] }) {
       const pos = { lat: center.lat(), lng: center.lng() };
       const currentZoom = map.getZoom() ?? DEFAULT_ZOOM;
 
-      // zoom in a bit (custom behavior)
       focusLatLng(pos, Math.min(currentZoom + CLUSTER_ZOOM_BUMP, MAX_FIT_ZOOM));
+
+      // Re-stamp AFTER the zoom animation finishes so any trailing ghost map click
+      // from the animation is still within the suppression window.
+      window.google.maps.event.addListenerOnce(map, "idle", () => {
+        markOverlayInteraction();
+      });
     },
-    [focusLatLng, suppressMapClickBriefly],
+    [focusLatLng, markOverlayInteraction],
   );
 
   const handleMapClick = useCallback(() => {
-    if (suppressMapClickRef.current) return;
+    const now = Date.now();
+
+    // Suppress ghost clicks that fire shortly after a marker/cluster tap on mobile.
+    // This also catches the delayed map click that fires after cluster zoom animations.
+    if (now - lastOverlayInteractionAtRef.current < MAP_CLICK_SUPPRESS_MS) {
+      return;
+    }
 
     setSelectedId(null);
-    setIsFocused(false);
+    setFocused(false);
     fitToPoints();
-  }, [fitToPoints]);
+  }, [fitToPoints, setFocused]);
 
   const handleUnMount = useCallback(() => {
     mapRef.current = null;
-  }, [mapRef]);
+  }, []);
 
   const handleOnLoad = useCallback(
-    (map: any) => {
+    (map: google.maps.Map) => {
       mapRef.current = map;
       fitToPoints();
     },
-    [fitToPoints, mapRef],
+    [fitToPoints],
   );
 
   return (
@@ -159,7 +178,8 @@ export default function Map({ data }: { data: T[] }) {
       onUnmount={handleUnMount}
       onClick={handleMapClick}
       options={{
-        clickableIcons: false, // prevents Google's default POI popups
+        clickableIcons: false,
+        disableDoubleClickZoom: true,
       }}
     >
       <MarkerClusterer
